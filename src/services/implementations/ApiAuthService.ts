@@ -32,11 +32,6 @@ export class ApiAuthService implements AuthService {
       'Content-Type': 'application/json',
     };
 
-    const token = this.tokenManager.getToken();
-    if (token) {
-      defaultHeaders['Authorization'] = `Bearer ${token}`;
-    }
-
     // 3. Use {credentials: 'include'} for session cookies
     const fetchOptions: RequestInit = {
       ...options,
@@ -57,7 +52,7 @@ export class ApiAuthService implements AuthService {
         const errorData = await response.json();
         errorMessage = errorData.error || errorData.errors?.join(', ') || errorMessage;
       } catch {
-        // Ignore JSON parsing errors
+
       }
       throw new Error(errorMessage);
     }
@@ -70,6 +65,7 @@ export class ApiAuthService implements AuthService {
     const data: T = await response.json();
     return data;
   }
+
 
   async login(username: string, password: string): Promise<User> {
 
@@ -89,6 +85,7 @@ export class ApiAuthService implements AuthService {
     return response.user;
   }
 
+
   async register(userData: RegisterRequest): Promise<User> {
 
     // 1. Make a request to the appropriate endpoint
@@ -106,6 +103,7 @@ export class ApiAuthService implements AuthService {
     // 3. Return the user object
     return response.user;
   }
+
 
   async logout(): Promise<void> {
 
@@ -129,6 +127,7 @@ export class ApiAuthService implements AuthService {
     }
   }
 
+
   async refreshToken(): Promise<User> {
 
     // 1. Make a request to the appropriate endpoint
@@ -145,6 +144,7 @@ export class ApiAuthService implements AuthService {
     // 4. Return the user object
     return response.user;
   }
+
 
   async getCurrentUser(): Promise<User | null> {
 

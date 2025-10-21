@@ -35,24 +35,58 @@ export class ApiChatService implements ChatService {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    // TODO: Implement the makeRequest helper method
-    // This should:
-    // 1. Construct the full URL using this.baseUrl and endpoint
-    // 2. Get the token using this.tokenManager.getToken()
-    // 3. Set up default headers including 'Content-Type': 'application/json'
-    // 4. Add Authorization header with Bearer token if token exists
-    // 5. Make the fetch request with the provided options
-    // 6. Handle non-ok responses by throwing an error with status and message
-    // 7. Return the parsed JSON response
 
-    throw new Error('makeRequest method not implemented');
+    // 1. Construct the full URL using this.baseUrl and endpoint
+    const url = `${this.baseUrl}${endpoint}`;
+
+    // 2. Get the token using this.tokenManager.getToken()
+    const token = this.tokenManager.getToken();
+
+    // 3. Set up default headers including 'Content-Type': 'application/json'
+    const defaultHeaders: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // 4. Add Authorization header with Bearer token if token exists
+    if (token) {
+      defaultHeaders['Authorization'] = `Bearer ${token}`;
+    }
+
+    // 5. Make the fetch request with the provided options
+    const fetchOptions: RequestInit = {
+      ...options,
+      headers: {
+        ...defaultHeaders,
+        ...(options.headers || {}),
+      },
+      credentials: 'include',
+    };
+
+    const response = await fetch(url, fetchOptions);
+
+    // 6. Handle non-ok responses by throwing an error with status and message
+    if (!response.ok) {
+      let errorMessage = `Request failed with status ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorData.errors?.join(', ') || errorMessage;
+      } catch {
+        // Ignore JSON parsing errors
+      }
+      throw new Error(errorMessage);
+    }
+
+    // 7. Return the parsed JSON response
+    const data: T = await response.json();
+    return data;
   }
 
   // Conversations
   async getConversations(): Promise<Conversation[]> {
-    // TODO: Implement getConversations method
-    // This should:
+
     // 1. Make a request to the appropriate endpoint
+
+
     // 2. Return the array of conversations
     //
     // See API_SPECIFICATION.md for endpoint details
@@ -64,9 +98,15 @@ export class ApiChatService implements ChatService {
     // TODO: Implement getConversation method
     // This should:
     // 1. Make a request to the appropriate endpoint
+    const conversation = await this.makeRequest<{token: string}>(
+      '/auth/conversations',
+      {
+        method: 'GET',
+      }
+    );
+    
     // 2. Return the conversation object
-    //
-    // See API_SPECIFICATION.md for endpoint details
+    return conversation;
 
     throw new Error('getConversation method not implemented');
   }
