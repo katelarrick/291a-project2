@@ -62,16 +62,15 @@ export class ApiChatService implements ChatService {
       credentials: 'include',
     };
 
+    // 6. Handle non-ok responses by throwing an error with status and message
     const response = await fetch(url, fetchOptions);
 
-    // 6. Handle non-ok responses by throwing an error with status and message
     if (!response.ok) {
       let errorMessage = `Request failed with status ${response.status}`;
       try {
         const errorData = await response.json();
         errorMessage = errorData.error || errorData.errors?.join(', ') || errorMessage;
       } catch {
-        // Ignore JSON parsing errors
       }
       throw new Error(errorMessage);
     }
@@ -85,43 +84,40 @@ export class ApiChatService implements ChatService {
   async getConversations(): Promise<Conversation[]> {
 
     // 1. Make a request to the appropriate endpoint
-
+    const conversations = await this.makeRequest<Conversation[]>('/conversations', {
+      method: 'GET',
+    });
 
     // 2. Return the array of conversations
-    //
-    // See API_SPECIFICATION.md for endpoint details
-
-    throw new Error('getConversations method not implemented');
+    return conversations;
   }
 
   async getConversation(_id: string): Promise<Conversation> {
-    // TODO: Implement getConversation method
-    // This should:
+
     // 1. Make a request to the appropriate endpoint
-    const conversation = await this.makeRequest<{token: string}>(
-      '/auth/conversations',
-      {
-        method: 'GET',
-      }
-    );
+    const conversation = await this.makeRequest<Conversation>(`/conversations/${_id}`, {
+      method: 'GET',
+    });
     
     // 2. Return the conversation object
     return conversation;
-
-    throw new Error('getConversation method not implemented');
   }
 
   async createConversation(
     request: CreateConversationRequest
   ): Promise<Conversation> {
-    // TODO: Implement createConversation method
-    // This should:
-    // 1. Make a request to the appropriate endpoint
-    // 2. Return the created conversation object
-    //
-    // See API_SPECIFICATION.md for endpoint details
 
-    throw new Error('createConversation method not implemented');
+    // 1. Make a request to the appropriate endpoint
+    const conversation = await this.makeRequest<Conversation>(
+          '/conversations',
+          {
+            method: 'POST',
+            body: JSON.stringify(request),
+          }
+        );
+
+    // 2. Return the created conversation object
+    return conversation;
   }
 
   async updateConversation(
@@ -141,25 +137,32 @@ export class ApiChatService implements ChatService {
 
   // Messages
   async getMessages(conversationId: string): Promise<Message[]> {
-    // TODO: Implement getMessages method
-    // This should:
-    // 1. Make a request to the appropriate endpoint
-    // 2. Return the array of messages
-    //
-    // See API_SPECIFICATION.md for endpoint details
 
-    throw new Error('getMessages method not implemented');
+    // 1. Make a request to the appropriate endpoint
+    const messages = await this.makeRequest<Message[]>(
+      `/conversations/${conversationId}/messages`,
+      {
+        method: 'GET',
+      }
+    );
+
+    // 2. Return the array of messages
+    return messages;
   }
 
   async sendMessage(request: SendMessageRequest): Promise<Message> {
-    // TODO: Implement sendMessage method
-    // This should:
-    // 1. Make a request to the appropriate endpoint
-    // 2. Return the created message object
-    //
-    // See API_SPECIFICATION.md for endpoint details
 
-    throw new Error('sendMessage method not implemented');
+    // 1. Make a request to the appropriate endpoint
+    const message = await this.makeRequest<Message>(
+      '/messages',
+      {
+        method: 'POST',
+        body: JSON.stringify(request),
+      }
+    );
+
+    // 2. Return the created message object
+    return message;
   }
 
   async markMessageAsRead(messageId: string): Promise<void> {
@@ -170,70 +173,87 @@ export class ApiChatService implements ChatService {
 
   // Expert-specific operations
   async getExpertQueue(): Promise<ExpertQueue> {
-    // TODO: Implement getExpertQueue method
-    // This should:
-    // 1. Make a request to the appropriate endpoint
-    // 2. Return the expert queue object with waitingConversations and assignedConversations
-    //
-    // See API_SPECIFICATION.md for endpoint details
 
-    throw new Error('getExpertQueue method not implemented');
+    // 1. Make a request to the appropriate endpoint
+    const expertQueue = await this.makeRequest<ExpertQueue>(
+      '/expert/queue',
+      {
+        method: 'GET',
+      }
+    );
+
+    // 2. Return the expert queue object with waitingConversations and assignedConversations
+    return expertQueue;
   }
 
   async claimConversation(conversationId: string): Promise<void> {
-    // TODO: Implement claimConversation method
-    // This should:
-    // 1. Make a request to the appropriate endpoint
-    // 2. Return void (no response body expected)
-    //
-    // See API_SPECIFICATION.md for endpoint details
 
-    throw new Error('claimConversation method not implemented');
+    // 1. Make a request to the appropriate endpoint
+    await this.makeRequest<ExpertQueue>(
+      `/expert/conversations/${conversationId}/claim`,
+      {
+        method: 'POST',
+      }
+    );
+
+    // 2. Return void (no response body expected)
   }
 
   async unclaimConversation(conversationId: string): Promise<void> {
-    // TODO: Implement unclaimConversation method
-    // This should:
-    // 1. Make a request to the appropriate endpoint
-    // 2. Return void (no response body expected)
-    //
-    // See API_SPECIFICATION.md for endpoint details
 
-    throw new Error('unclaimConversation method not implemented');
+    // 1. Make a request to the appropriate endpoint
+    await this.makeRequest<ExpertQueue>(
+      `/expert/conversations/${conversationId}/unclaim`,
+      {
+        method: 'POST',
+      }
+    );
+
+    // 2. Return void (no response body expected)
   }
 
   async getExpertProfile(): Promise<ExpertProfile> {
-    // TODO: Implement getExpertProfile method
-    // This should:
-    // 1. Make a request to the appropriate endpoint
-    // 2. Return the expert profile object
-    //
-    // See API_SPECIFICATION.md for endpoint details
 
-    throw new Error('getExpertProfile method not implemented');
+    // 1. Make a request to the appropriate endpoint
+    const expertProfile = await this.makeRequest<ExpertProfile>(
+      '/expert/profile',
+      {
+        method: 'GET',
+      }
+    );
+
+    // 2. Return the expert profile object
+    return expertProfile;
   }
 
   async updateExpertProfile(
     request: UpdateExpertProfileRequest
   ): Promise<ExpertProfile> {
-    // TODO: Implement updateExpertProfile method
-    // This should:
-    // 1. Make a request to the appropriate endpoint
-    // 2. Return the updated expert profile object
-    //
-    // See API_SPECIFICATION.md for endpoint details
 
-    throw new Error('updateExpertProfile method not implemented');
+    // 1. Make a request to the appropriate endpoint
+    const expertProfile = await this.makeRequest<ExpertProfile>(
+      '/expert/profile',
+      {
+        method: 'PUT',
+        body: JSON.stringify(request),
+      }
+    );
+
+    // 2. Return the updated expert profile object
+    return expertProfile;
   }
 
   async getExpertAssignmentHistory(): Promise<ExpertAssignment[]> {
-    // TODO: Implement getExpertAssignmentHistory method
-    // This should:
-    // 1. Make a request to the appropriate endpoint
-    // 2. Return the array of expert assignments
-    //
-    // See API_SPECIFICATION.md for endpoint details
 
-    throw new Error('getExpertAssignmentHistory method not implemented');
+    // 1. Make a request to the appropriate endpoint
+    const assignmentHistory = await this.makeRequest<ExpertAssignment[]>(
+      '/expert/assignments/history',
+      {
+        method: 'GET',
+      }
+    );
+
+    // 2. Return the array of expert assignments
+    return assignmentHistory;
   }
 }
