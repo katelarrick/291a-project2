@@ -74,7 +74,12 @@ export class ApiAuthService implements AuthService {
       '/auth/login',
       {
         method: 'POST',
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          user: {
+            username,
+            password,
+          },
+        }),
       }
     );
 
@@ -86,21 +91,36 @@ export class ApiAuthService implements AuthService {
   }
 
 
-  async register(userData: RegisterRequest): Promise<User> {
+  // async register(userData: RegisterRequest): Promise<User> {
 
-    // 1. Make a request to the appropriate endpoint
+  //   // 1. Make a request to the appropriate endpoint
+  //   const response = await this.makeRequest<{ user: User; token: string }>(
+  //     '/auth/register',
+  //     {
+  //       method: 'POST',
+  //       body: JSON.stringify(userData),
+  //     }
+  //   );
+  
+  //   // 2. Store the token using this.tokenManager.setToken(response.token)
+  //   this.tokenManager.setToken(response.token);
+    
+  //   // 3. Return the user object
+  //   return response.user;
+  // }
+
+  async register(userData: RegisterRequest): Promise<User> {
     const response = await this.makeRequest<{ user: User; token: string }>(
       '/auth/register',
       {
         method: 'POST',
-        body: JSON.stringify(userData),
+        body: JSON.stringify({
+          user: userData,
+        }),
       }
     );
   
-    // 2. Store the token using this.tokenManager.setToken(response.token)
     this.tokenManager.setToken(response.token);
-    
-    // 3. Return the user object
     return response.user;
   }
 
