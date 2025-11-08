@@ -90,25 +90,6 @@ export class ApiAuthService implements AuthService {
     return response.user;
   }
 
-
-  // async register(userData: RegisterRequest): Promise<User> {
-
-  //   // 1. Make a request to the appropriate endpoint
-  //   const response = await this.makeRequest<{ user: User; token: string }>(
-  //     '/auth/register',
-  //     {
-  //       method: 'POST',
-  //       body: JSON.stringify(userData),
-  //     }
-  //   );
-  
-  //   // 2. Store the token using this.tokenManager.setToken(response.token)
-  //   this.tokenManager.setToken(response.token);
-    
-  //   // 3. Return the user object
-  //   return response.user;
-  // }
-
   async register(userData: RegisterRequest): Promise<User> {
     const response = await this.makeRequest<{ user: User; token: string }>(
       '/auth/register',

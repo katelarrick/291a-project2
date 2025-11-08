@@ -157,7 +157,10 @@ export class ApiChatService implements ChatService {
       '/messages',
       {
         method: 'POST',
-        body: JSON.stringify(request),
+        body: JSON.stringify({
+          conversation_id: request.conversationId,
+          content: request.content,
+        }),
       }
     );
 
