@@ -23,7 +23,9 @@ export default function ConversationView({
   onClaimConversation,
   onBackToDashboard,
 }: ConversationViewProps) {
-  const isClaimedByMe = conversation?.assignedExpertId === currentExpert;
+  console.log('assignedExpertId:', conversation?.assignedExpertId);
+  console.log('currentExpert:', currentExpert);
+  const isClaimedByMe = conversation?.assignedExpertId === String(currentExpert);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change
